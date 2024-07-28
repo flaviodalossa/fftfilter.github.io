@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Upload</title>
+</head>
+<body>
+    <h1>Upload CSV and Parameters</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" name="csvfile" required><br>
+        <input type="text" name="param1" placeholder="Parameter 1" required><br>
+        <input type="text" name="param2" placeholder="Parameter 2" required><br>
+        <input type="text" name="param3" placeholder="Parameter 3" required><br>
+        <input type="text" name="param4" placeholder="Parameter 4" required><br>
+        <button type="submit">Upload and Process</button>
+    </form>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            fetch('https://your-backend.herokuapp.com/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'processed.csv';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
