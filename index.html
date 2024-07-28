@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSV Upload</title>
+    <title>FFT Filter</title>
 </head>
 <body>
-    <h1>Upload CSV and Parameters</h1>
+    <h1>Upload a CSV file and type the parameters</h1>
     <form id="uploadForm" enctype="multipart/form-data">
         <input type="file" name="csvfile" required><br>
-        <input type="text" name="param1" placeholder="Parameter 1" required><br>
-        <input type="text" name="param2" placeholder="Parameter 2" required><br>
-        <input type="text" name="param3" placeholder="Parameter 3" required><br>
-        <input type="text" name="param4" placeholder="Parameter 4" required><br>
+        <input type="text" name="param1" placeholder="lower" required><br>
+        <input type="text" name="param2" placeholder="upper" required><br>
+        <input type="text" name="param3" placeholder="fs" required><br>
+        <input type="text" name="param4" placeholder="intercept: Yes or Not" required><br>
         <button type="submit">Upload and Process</button>
     </form>
 
@@ -20,7 +20,7 @@
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const formData = new FormData(this);
-            fetch('https://your-backend.herokuapp.com/upload', {
+            fetch('https://fftfilter-63ff68dd683b.herokuapp.com/upload', {
                 method: 'POST',
                 body: formData
             })
