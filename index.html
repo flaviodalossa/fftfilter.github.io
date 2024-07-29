@@ -7,8 +7,14 @@
 </head>
 <body>
     <h1>Upload a CSV file and type the parameters</h1>
+    
+    <p>Band-pass filtering: fill in the lower and upper arguments, with upper greater than lower;</p>
+    <p>Low-pass filtering: fill in the upper argument with the desired value, different from zero, and the lower argument with zero;</p>
+    <p>High-pass filtering: fill in the lower argument with the desired value and the upper argument with zero;</p>
+    <p>The sampling frequency, "fs", must be specified correctly. For example: if 1975 observations were collected between 0s and 1s, we will have fs = 1975. Preferably, we should have an integer number of cycles covered by the total observations.</p>
+
     <form id="uploadForm" enctype="multipart/form-data">
-        <input type="file" name="csvfile" required><br>
+        <input type="file" name="csvfile" accept=".csv" required><br>
         <input type="text" name="param1" placeholder="lower" required><br>
         <input type="text" name="param2" placeholder="upper" required><br>
         <input type="text" name="param3" placeholder="fs" required><br>
@@ -16,15 +22,42 @@
         <button type="submit">Upload and Process</button>
     </form>
 
+    <p>Contact</p>
+    <p>Flavio D. Freire: <a href="mailto:dflavio152@gmail.com">dflavio152@gmail.com</a></p>
+    <p>Isabel G. Soares: <a href="mailto:isaa.isinhaa@gmail.com">isaa.isinhaa@gmail.com</a></p>
+
     <script>
         document.getElementById('uploadForm').addEventListener('submit', function(event) {
             event.preventDefault();
+            
+            // Validate parameter inputs
+            const param1 = document.querySelector('input[name="param1"]').value;
+            const param2 = document.querySelector('input[name="param2"]').value;
+            const param3 = document.querySelector('input[name="param3"]').value;
+            const param4 = document.querySelector('input[name="param4"]').value.toLowerCase();
+
+            if (isNaN(param1) || isNaN(param2) || isNaN(param3)) {
+                alert('Parameters lower, upper, and fs must be numbers.');
+                return;
+            }
+
+            if (param4 !== 'yes' && param4 !== 'not') {
+                alert('Parameter intercept must be "Yes" or "Not".');
+                return;
+            }
+
             const formData = new FormData(this);
+
             fetch('https://fftfilter-63ff68dd683b.herokuapp.com/upload', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.blob())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok.');
+                }
+                return response.blob();
+            })
             .then(blob => {
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
